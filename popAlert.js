@@ -1,61 +1,90 @@
 cssloaded=false
-function pop_alert(content="nothing to alert",head="alert",btn="ok",dm=false){
-    if(cssloaded==false){
-        var css_g2xc=document.createElement("style")
-        css_g2xc.innerHTML=".g2xc-wrapper{width:100vw;height:100vh;background:rgba(0,0,0,.75);position:fixed;left:0;top:0;z-index:400;display:grid;place-item:center;backdrop-filter:blur(10px)}.g2xc-card-alert{width:77%;margin:auto;background:#fff;padding:1rem 2rem;overflow:hidden;border-radius:7px;animation:g2xczoom .5s}.g2xc-button-confrim{padding:.7rem .4rem;background:#1e90ff;border:none;outline:0;border-radius:7px;color:#fff;min-width:70px;margin-top:.72rem;float:right;font-weight:500}.g2xc-button-confrim:active{background:#87ceeb}.g2xc-heading-alert{font-weight:500}@keyframes g2xczoom{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}@keyframes g2xczoomout{to{transform:scale(0);opacity:0}from{transform:scale(1);opacity:1}}@keyframes g2xcfadeout{from{opacity:1}to{opacity:0}}"
- document.body.appendChild(css_g2xc)
- cssloaded=true
- g2x_alert(content,head,btn,dm)
- }        
-else{
-    g2x_alert(content,head,btn,dm)
-}            
-}
 
-function g2x_alert(content,head,btn_text,dm){
+
+//main alert function
+
+function pop_alert(content="",head="alert",btn_text="ok",dm=false,btn_color="null"){
+
+
+loadcss()
+
     var wrapper=document.createElement("div")
-    wrapper.classList.add("g2xc-wrapper")
+    wrapper.classList.add("pop-wrapper")
     
 var card=document.createElement("div")    
-    card.classList.add("g2xc-card-alert")
+    card.classList.add("pop-card")
     
  wrapper.appendChild(card) 
+ 
  var heading=document.createElement("h1")
- heading.classList.add("g2xc-heading-alert")
+ heading.classList.add("pop-heading")
+ 
  heading.innerHTML=head  
  card.appendChild(heading)
  card.innerHTML+=content
  var btn=document.createElement("button")
- btn.classList.add("g2xc-button-confrim")
+ 
+ document.body.style.overflowY="hidden"
+ btn.classList.add("pop-btn")
  btn.innerHTML+=btn_text
- btn.addEventListener("click",g2xcClose)
+ btn.addEventListener("click",popClose)
+ 
+ 
  card.appendChild(btn)
     document.body.appendChild(wrapper)
-   window.addEventListener("click",g2xcouter)
+    var is_opened=true
+   window.addEventListener("click",popOuter)
     if(dm==true){
         btn.style.background="#1b60a6"
         card.style.background="rgb(35,35,35)"
         card.style.color="white"
         
     }
-        
+    
+    if(btn_color!=="null"){
+        btn.style.background=btn_color
+    }    
     
     
     
-    function g2xcClose(){
-     card.style.animation="g2xczoomout 0.5s forwards"
-     wrapper.style.animation="g2xcfadeout 0.5s forwards"
+    function popClose(){
+     card.style.animation="popAnimationOut 0.5s forwards"
+     wrapper.style.animation="popFade 0.5s forwards"
+     
+     
+     document.body.style.overflowY="scroll"
+     is_opened =false
      setTimeout(()=>{wrapper.remove()},500)
+     
  }
  
- function g2xcouter(e){
+ function popOuter(e){
      if(e.target==wrapper){
-         g2xcClose()
+         popClose()
      }
  }
+ 
+ 
     
 }
 
 
+//css injector
 
+function loadcss(){
+    if(cssloaded==false){
+        var styleContainer=document.createElement("style")
+        styleContainer.innerHTML=`@import url(https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap);.pop-wrapper{width:100%;height:100%;background:rgba(0,0,0,.75);font-family:Roboto,sans-serif;position:fixed;left:0;top:0;z-index:400;display:grid;place-item:center;overflow-y:scroll;backdrop-filter:blur(10px)}.pop-card{width:77%;margin:auto;background:#fff;padding:1rem 2rem;overflow:hidden;border-radius:7px;animation:popAnimationIn .5s}.pop-btn{padding:.7rem .4rem;background:#1e90ff;border:none;outline:0;border-radius:7px;color:#fff;min-width:70px;margin:.1rem;margin-top:2.72rem;float:right;font-weight:500}.pop-btn:active{opacity:.4}.pop-heading{font-weight:500;font-size:2.25rem}@keyframes popAnimationIn{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}@keyframes popAnimationOut{to{transform:scale(0);opacity:0}from{transform:scale(1);opacity:1}}@keyframes popFade{from{opacity:1}to{opacity:0}}`
+ document.body.appendChild(styleContainer)
+ cssloaded=true
+ 
+ }        
+else{
+    return 
+} 
+           
+}
+
+
+//paying my own bills
 
